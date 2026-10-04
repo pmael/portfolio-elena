@@ -1,0 +1,102 @@
+.title {
+  margin: 0;
+  font-family: var(--font-title);
+  font-weight: 400;
+  font-size: var(--fs-title);
+  line-height: 1.04;
+  letter-spacing: 0.012em;
+  color: var(--title);
+  text-align: center;
+  text-wrap: balance;
+  -webkit-text-stroke: 0;
+  text-shadow: 0 0 0.45em rgba(165, 215, 255, 0.2);
+}
+
+.title__line {
+  position: relative;
+  display: block;
+}
+
+/* Words never break in the middle; letters need inline-block to be transformed. */
+.title__word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.title__char {
+  display: inline-block;
+  opacity: 0;
+  filter: blur(14px);
+  transform: translateY(0.24em) scale(0.92);
+}
+
+/* 1. The letters appear one after another, softly… */
+.title.is-in .title__char {
+  animation:
+    title-char-in 1.25s var(--ease-out) calc(var(--title-delay, 0ms) + var(--i) * 75ms) forwards,
+    title-char-float 6.5s ease-in-out calc(var(--title-delay, 0ms) + 2200ms + var(--i) * 130ms) infinite;
+  animation-play-state: running, paused;
+}
+
+/* 2. …then drift in a slow wave, only while the title is on screen. */
+.title.is-in.is-live .title__char {
+  animation-play-state: running, running;
+}
+
+@keyframes title-char-in {
+  to {
+    opacity: 1;
+    filter: none;
+    transform: none;
+  }
+}
+
+@keyframes title-char-float {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -0.035em;
+  }
+}
+
+/* A small note hanging off the right of the title, e.g. "(En inglés)". */
+.title__aside {
+  position: absolute;
+  top: 0.6em;
+  left: 100%;
+  margin-left: 0.45em;
+  font-family: var(--font-body);
+  font-size: max(0.3em, 1.75rem);
+  font-style: italic;
+  letter-spacing: 0;
+  white-space: nowrap;
+  color: var(--text);
+  -webkit-text-stroke: 0.5px currentColor;
+  text-shadow: none;
+  opacity: 0;
+  transition: opacity 1.4s ease 1.2s;
+}
+
+.title.is-in .title__aside {
+  opacity: 0.9;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .title__char {
+    opacity: 1;
+    filter: none;
+    transform: none;
+  }
+
+  .title.is-in .title__char,
+  .title.is-in.is-live .title__char {
+    animation: none;
+  }
+
+  .title__aside {
+    opacity: 0.9;
+    transition: none;
+  }
+}

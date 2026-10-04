@@ -1,0 +1,146 @@
+.video-card {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: var(--card-radius, 0.9rem);
+  overflow: hidden;
+  isolation: isolate;
+  background: #2f2f2f;
+  color: #fff;
+  cursor: pointer;
+  box-shadow:
+    0 1.2rem 3rem rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+  transition:
+    transform 0.55s var(--ease-out),
+    box-shadow 0.55s ease;
+}
+
+.video-grid--landscape .video-card {
+  aspect-ratio: 16 / 9;
+}
+
+.video-grid--portrait .video-card {
+  aspect-ratio: 9 / 16;
+}
+
+.video-card:hover,
+.video-card:focus-visible {
+  transform: translateY(-0.4rem);
+  box-shadow:
+    0 1.8rem 3.6rem rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(165, 215, 255, 0.55);
+}
+
+.video-card__poster {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transform: scale(1.001);
+  transition:
+    opacity 0.7s ease,
+    transform 0.9s var(--ease-out);
+}
+
+.video-card__poster.is-loaded {
+  opacity: 1;
+}
+
+.video-card:hover .video-card__poster,
+.video-card:focus-visible .video-card__poster {
+  transform: scale(1.06);
+}
+
+.video-card__fallback {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(160deg, #6a4c93 0%, #c2417a 50%, #f0a24b 100%);
+}
+
+.video-card__fallback img {
+  width: 28%;
+  height: auto;
+  opacity: 0.9;
+}
+
+/* Darkens the bottom a little so the play button always reads, whatever the thumbnail. */
+.video-card__shade {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0) 60%);
+  transition: opacity 0.4s ease;
+}
+
+.video-card:hover .video-card__shade {
+  opacity: 0.7;
+}
+
+.video-card__play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: clamp(3.6rem, 5.2vw, 5.4rem);
+  aspect-ratio: 1;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  background: rgba(32, 32, 32, 0.5);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  transform: translate(-50%, -50%);
+  transition:
+    transform 0.5s var(--ease-spring),
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.video-card__play svg {
+  width: 46%;
+  margin-left: 7%;
+  fill: currentColor;
+}
+
+.video-card:hover .video-card__play,
+.video-card:focus-visible .video-card__play {
+  transform: translate(-50%, -50%) scale(1.14);
+  background: rgba(165, 215, 255, 0.92);
+  border-color: transparent;
+  color: #26323f;
+}
+
+/* Slots without a video yet: an empty space that keeps the layout of the slide. */
+.video-card--blank {
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: none;
+  border: 1.5px dashed rgba(255, 255, 255, 0.2);
+  cursor: default;
+}
+
+.video-card--blank:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .video-card,
+  .video-card__poster,
+  .video-card__play {
+    transition: none;
+  }
+
+  .video-card:hover,
+  .video-card:focus-visible {
+    transform: none;
+  }
+}
