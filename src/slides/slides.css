@@ -1,19 +1,14 @@
 /* ===================================================================================================
-   Slide shell: every slide is at least one screen tall, title on top, content centred below it.
+   Page shell: every page fills the screen (see PageHost), title on top, content centred below it.
    =============================================================================================== */
-main {
-  position: relative;
-  z-index: 1;
-}
-
 .slide {
   position: relative;
   display: flex;
+  flex: 1 0 auto;
   flex-direction: column;
   align-items: center;
-  min-height: 100vh;
-  min-height: 100svh;
-  padding: clamp(2.5rem, 5.5vh, 4.75rem) var(--gutter) clamp(1.75rem, 4.5vh, 3.75rem);
+  /* The top leaves room for the menu button, which sits in the corner. */
+  padding: clamp(3.9rem, 5.5vh, 4.9rem) var(--gutter) clamp(1.75rem, 4.5vh, 3.75rem);
   text-align: center;
   /* Some blocks start shifted sideways or bleed past their cell (transparent margins): never widen the page. */
   overflow-x: clip;
@@ -272,6 +267,15 @@ main {
   column-gap: clamp(1.5rem, 7vw, 9rem);
 }
 
+/* Scripts (PDF pages): three A4 pages in a row. */
+.video-grid--document {
+  --ratio: 0.7071;
+  --min-card: 15rem;
+  --columns: 3;
+  max-width: 86rem;
+  column-gap: clamp(1.5rem, 7vw, 9rem);
+}
+
 .video-item {
   display: flex;
   flex-direction: column;
@@ -337,7 +341,8 @@ main {
     row-gap: 1.6rem;
   }
 
-  .video-grid--portrait[data-count='3'] {
+  .video-grid--portrait[data-count='3'],
+  .video-grid--document {
     --columns: 2;
   }
 
@@ -388,8 +393,7 @@ main {
   gap: clamp(1.25rem, 2.6vw, 3rem);
 }
 
-.contact__socials a,
-.contact__qr a {
+.contact__socials a {
   display: block;
   transition:
     transform 0.5s var(--ease-spring),
@@ -402,8 +406,7 @@ main {
   height: auto;
 }
 
-.contact__socials a:hover,
-.contact__qr a:hover {
+.contact__socials a:hover {
   transform: translateY(-0.4rem) scale(1.07) rotate(-2deg);
   filter: drop-shadow(0 0.9rem 1.2rem rgba(0, 0, 0, 0.4));
 }
@@ -412,12 +415,6 @@ main {
   display: block;
   width: clamp(8rem, 11.2vw, 13.5rem);
   height: auto;
-}
-
-.contact__qr p {
-  margin-top: 0.7rem;
-  font-size: var(--fs-caption);
-  font-style: italic;
 }
 
 /* The two Elenas arrive from the sides, then pivot left and right on themselves, in mirror. */

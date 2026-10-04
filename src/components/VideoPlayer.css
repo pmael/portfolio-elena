@@ -1,9 +1,3 @@
-/* Page behind the player: no scrolling, and no layout jump when the scrollbar disappears. */
-html.is-locked {
-  overflow: hidden;
-  padding-right: var(--scrollbar-gap, 0px);
-}
-
 .lightbox {
   position: fixed;
   inset: 0;
@@ -40,6 +34,11 @@ html.is-locked {
   animation: lightbox-panel-out 0.22s ease both;
 }
 
+/* The reader and, to its right, the cross that closes it. */
+.lightbox__viewer {
+  position: relative;
+}
+
 .lightbox__stage {
   position: relative;
   overflow: hidden;
@@ -61,13 +60,35 @@ html.is-locked {
 
 /* YouTube: as large as fits the screen, always 16:9. */
 .lightbox__stage--landscape {
-  width: min(92vw, calc((100svh - 13rem) * 16 / 9), 1320px);
+  width: min(calc(100vw - 9rem), calc((100svh - 13rem) * 16 / 9), 1320px);
   aspect-ratio: 16 / 9;
+}
+
+/* A video file shot on a phone: vertical, as large as fits. */
+.lightbox__stage--video {
+  width: min(calc(100vw - 9rem), 460px, calc((100svh - 14rem) * 9 / 16));
+  aspect-ratio: 9 / 16;
+}
+
+.lightbox__stage video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  object-fit: contain;
+}
+
+/* A script: an A4 page, with room below for the page controls. */
+.lightbox__stage--document {
+  width: min(calc(100vw - 9rem), calc((100svh - 17rem) * 210 / 297));
+  aspect-ratio: 210 / 297;
+  background: #2b2b2b;
 }
 
 /* Instagram: a phone-shaped card whose height is reported by the embed itself. */
 .lightbox__stage--portrait {
-  width: min(92vw, 400px, calc((100svh - 14rem) / 1.72));
+  width: min(calc(100vw - 9rem), 400px, calc((100svh - 14rem) / 1.72));
   aspect-ratio: 1 / 1.72;
   background: #fff;
 }
@@ -139,6 +160,14 @@ html.is-locked {
   transform: scale(1.1);
 }
 
+.lightbox__controls--pages {
+  margin-top: 0.7rem;
+}
+
+.lightbox__count--pages {
+  min-width: 8.5rem;
+}
+
 .lightbox__step:disabled {
   opacity: 0.28;
   cursor: default;
@@ -166,12 +195,8 @@ html.is-locked {
 .lightbox__close {
   position: absolute;
   top: 0;
-  right: 0;
-  transform: translate(25%, -125%);
-}
-
-.lightbox__close:hover {
-  transform: translate(25%, -125%) scale(1.1);
+  left: 100%;
+  margin-left: 1rem;
 }
 
 @keyframes lightbox-in {
@@ -209,18 +234,38 @@ html.is-locked {
   }
 }
 
-/* Small screens: the close button sits inside the corner instead of floating above the player. */
-@media (max-width: 640px) {
+/* Small screens: there is no room beside the reader, so the cross sits in the corner of the screen. */
+@media (max-width: 700px) {
+  .lightbox__stage--landscape,
+  .lightbox__stage--video,
+  .lightbox__stage--document,
+  .lightbox__stage--portrait {
+    width: min(92vw, var(--stage-max, 100vw));
+  }
+
+  .lightbox__stage--landscape {
+    --stage-max: calc((100svh - 13rem) * 16 / 9);
+  }
+
+  .lightbox__stage--video {
+    --stage-max: min(460px, calc((100svh - 14rem) * 9 / 16));
+  }
+
+  .lightbox__stage--document {
+    --stage-max: calc((100svh - 17rem) * 210 / 297);
+  }
+
+  .lightbox__stage--portrait {
+    --stage-max: min(400px, calc((100svh - 14rem) / 1.72));
+  }
+
   .lightbox__close {
     position: fixed;
     top: 0.75rem;
     right: 0.75rem;
-    transform: none;
+    left: auto;
+    margin: 0;
     background: rgba(22, 22, 22, 0.7);
-  }
-
-  .lightbox__close:hover {
-    transform: scale(1.1);
   }
 
   .lightbox__source {

@@ -43,10 +43,7 @@ export default function Contact() {
           </Reveal>
 
           <Reveal className="contact__qr" delay={300}>
-            <a href={CONTACT.instagram} aria-label={CONTACT_COPY.instagramLabel} {...external}>
-              <img src={instagramQr} alt={CONTACT_COPY.qrAlt} width="215" height="247" />
-            </a>
-            <p>{CONTACT_COPY.qrCaption}</p>
+            <img src={instagramQr} alt={CONTACT_COPY.qrAlt} width="215" height="247" />
           </Reveal>
         </div>
 

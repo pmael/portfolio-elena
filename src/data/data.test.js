@@ -1,6 +1,6 @@
 import { CONTACT } from './links';
 import { MAX_RATING, SOFTWARE } from './software';
-import { PLAYABLE_VIDEOS, VIDEO_SLIDES } from './videos';
+import { PLAYABLE_VIDEOS, VIDEO_SLIDES, isDocument, mediaOf } from './videos';
 import { STARS } from './stars';
 
 // These tests pin down what was specified for the portfolio, so a later edit cannot silently change it.
@@ -56,13 +56,28 @@ describe('video slots', () => {
     expect(slot(n).poster).toBeTruthy();
   });
 
-  test.each([8, 10, 11, 12, 13])('video %i is still a blank space', (n) => {
-    expect(slot(n).playable).toBe(false);
-    expect(slot(n).media).toBeNull();
+  test.each([8, 10])('video %i is a video file that ships with the site, with a poster', (n) => {
+    expect(slot(n).media.provider).toBe('file');
+    expect(slot(n).media.src).toMatch(/video-\d+\.mp4$/);
+    expect(slot(n).poster).toBeTruthy();
   });
 
-  test('the player walks through the 8 playable videos in order', () => {
-    expect(PLAYABLE_VIDEOS.map((item) => item.n)).toEqual([1, 2, 3, 4, 5, 6, 7, 9]);
+  test.each([11, 12, 13])('script %i is a PDF document, with a poster', (n) => {
+    expect(slot(n).media.provider).toBe('pdf');
+    expect(slot(n).media.src).toMatch(new RegExp(`document-${n}\\.pdf$`));
+    expect(isDocument(slot(n))).toBe(true);
+    expect(slot(n).href).toBe(slot(n).media.src);
+    expect(slot(n).poster).toBeTruthy();
+  });
+
+  test('every slot now has something to open', () => {
+    expect(slots.every((item) => item.playable)).toBe(true);
+    expect(PLAYABLE_VIDEOS.map((item) => item.n)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);
+  });
+
+  test('a slot without url or file stays a blank space', () => {
+    expect(mediaOf({ caption: 'later' })).toBeNull();
+    expect(mediaOf({ url: null })).toBeNull();
   });
 });
 

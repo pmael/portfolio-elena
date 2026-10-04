@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { embedUrl } from '../lib/media';
+import PdfReader from './PdfReader';
 import prefersReducedMotion from '../lib/motion';
 import cx from '../lib/cx';
 import './VideoPlayer.css';
@@ -37,8 +38,10 @@ function trapFocus(event, container) {
 }
 
 function Lightbox({ video, position, total, closing, onClose, onGo }) {
-  const { media, caption, url } = video;
+  const { media, caption, href, poster } = video;
   const isInstagram = media.provider === 'instagram';
+  const isDocument = media.provider === 'pdf';
+  const isFile = media.provider === 'file';
   const hasPrevious = position > 0;
   const hasNext = position < total - 1;
 
@@ -46,16 +49,19 @@ function Lightbox({ video, position, total, closing, onClose, onGo }) {
   const closeRef = useRef(null);
   const [instagramHeight, setInstagramHeight] = useState(null);
 
-  // The page behind stops scrolling while the player is open (without the layout jumping).
+  // Reader state (documents only): current page and page count.
+  const [page, setPage] = useState(1);
+  const [pageCount, setPageCount] = useState(0);
+
   useEffect(() => {
-    const root = document.documentElement;
-    root.style.setProperty('--scrollbar-gap', `${window.innerWidth - root.clientWidth}px`);
-    root.classList.add('is-locked');
-    return () => {
-      root.classList.remove('is-locked');
-      root.style.removeProperty('--scrollbar-gap');
-    };
-  }, []);
+    setPage(1);
+    setPageCount(0);
+  }, [video.n]);
+
+  const flip = useCallback(
+    (step) => setPage((current) => Math.min(Math.max(current + step, 1), pageCount || 1)),
+    [pageCount],
+  );
 
   useEffect(() => {
     closeRef.current?.focus({ preventScroll: true });
@@ -66,17 +72,19 @@ function Lightbox({ video, position, total, closing, onClose, onGo }) {
       if (event.key === 'Escape') {
         event.preventDefault();
         onClose();
-      } else if (event.key === 'ArrowLeft' && hasPrevious) {
-        onGo(position - 1);
-      } else if (event.key === 'ArrowRight' && hasNext) {
-        onGo(position + 1);
+      } else if (event.key === 'ArrowLeft') {
+        if (isDocument) flip(-1);
+        else if (hasPrevious) onGo(position - 1);
+      } else if (event.key === 'ArrowRight') {
+        if (isDocument) flip(1);
+        else if (hasNext) onGo(position + 1);
       } else if (event.key === 'Tab') {
         trapFocus(event, dialogRef.current);
       }
     };
     document.addEventListener('keydown', onKeyDown);
     return () => document.removeEventListener('keydown', onKeyDown);
-  }, [onClose, onGo, position, hasPrevious, hasNext]);
+  }, [onClose, onGo, flip, position, hasPrevious, hasNext, isDocument]);
 
   // Instagram's embed tells its parent how tall its content is, so the frame can fit it exactly.
   useEffect(() => {
@@ -114,20 +122,87 @@ function Lightbox({ video, position, total, closing, onClose, onGo }) {
       <div className="lightbox__backdrop" onClick={onClose} />
 
       <div className="lightbox__panel">
-        <div
-          className={cx('lightbox__stage', isInstagram ? 'lightbox__stage--portrait' : 'lightbox__stage--landscape')}
-          style={instagramHeight ? { '--instagram-height': `${instagramHeight}px` } : undefined}
-          key={video.n}
-        >
-          <iframe
-            src={embedUrl(media)}
-            title={label}
-            allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
-            allowFullScreen
-          />
+        <div className="lightbox__viewer">
+          <div
+            className={cx(
+              'lightbox__stage',
+              isInstagram && 'lightbox__stage--portrait',
+              isFile && 'lightbox__stage--video',
+              isDocument && 'lightbox__stage--document',
+              !isInstagram && !isFile && !isDocument && 'lightbox__stage--landscape',
+            )}
+            style={
+              instagramHeight && isInstagram ? { '--instagram-height': `${instagramHeight}px` } : undefined
+            }
+            key={video.n}
+          >
+            {isDocument ? (
+              <PdfReader src={media.src} title={label} page={page} onLoaded={setPageCount} onFlip={flip} />
+            ) : isFile ? (
+              <video
+                src={media.src}
+                poster={poster}
+                title={label}
+                controls
+                autoPlay
+                muted
+                playsInline
+                preload="metadata"
+              />
+            ) : (
+              <iframe
+                src={embedUrl(media)}
+                title={label}
+                allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+                allowFullScreen
+              />
+            )}
+          </div>
+
+          <button
+            type="button"
+            ref={closeRef}
+            className="lightbox__close"
+            onClick={onClose}
+            aria-label="Cerrar el vídeo"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 6l12 12M18 6L6 18" />
+            </svg>
+          </button>
         </div>
 
         <p className="lightbox__caption">{caption}</p>
+
+        {isDocument ? (
+          <div className="lightbox__controls lightbox__controls--pages">
+            <button
+              type="button"
+              className="lightbox__step"
+              onClick={() => flip(-1)}
+              disabled={page <= 1}
+              aria-label="Página anterior"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M15 5l-7 7 7 7" />
+              </svg>
+            </button>
+            <span className="lightbox__count lightbox__count--pages" aria-live="polite">
+              Página {page} / {pageCount || '…'}
+            </span>
+            <button
+              type="button"
+              className="lightbox__step"
+              onClick={() => flip(1)}
+              disabled={!pageCount || page >= pageCount}
+              aria-label="Página siguiente"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+        ) : null}
 
         <div className="lightbox__controls">
           <button
@@ -135,13 +210,14 @@ function Lightbox({ video, position, total, closing, onClose, onGo }) {
             className="lightbox__step"
             onClick={() => onGo(position - 1)}
             disabled={!hasPrevious}
-            aria-label="Vídeo anterior"
+            aria-label={isDocument ? 'Guion anterior' : 'Vídeo anterior'}
           >
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M15 5l-7 7 7 7" />
             </svg>
           </button>
           <span className="lightbox__count" aria-live="polite">
+            {isDocument ? 'Guion ' : ''}
             {position + 1} / {total}
           </span>
           <button
@@ -149,32 +225,28 @@ function Lightbox({ video, position, total, closing, onClose, onGo }) {
             className="lightbox__step"
             onClick={() => onGo(position + 1)}
             disabled={!hasNext}
-            aria-label="Vídeo siguiente"
+            aria-label={isDocument ? 'Guion siguiente' : 'Vídeo siguiente'}
           >
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M9 5l7 7-7 7" />
             </svg>
           </button>
-          <a className="lightbox__source" href={url} target="_blank" rel="noopener noreferrer">
-            Ver en {provider} ↗
-          </a>
+          {href ? (
+            <a
+              className="lightbox__source"
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              download={isDocument ? '' : undefined}
+            >
+              {isDocument ? 'Descargar PDF ↓' : `Ver en ${provider} ↗`}
+            </a>
+          ) : null}
         </div>
 
-        {isInstagram ? null : (
+        {isInstagram || isDocument ? null : (
           <p className="lightbox__hint">Se reproduce sin sonido: activa el audio desde el reproductor.</p>
         )}
-
-        <button
-          type="button"
-          ref={closeRef}
-          className="lightbox__close"
-          onClick={onClose}
-          aria-label="Cerrar el vídeo"
-        >
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M6 6l12 12M18 6L6 18" />
-          </svg>
-        </button>
       </div>
     </div>
   );
@@ -197,11 +269,22 @@ export function VideoPlayerProvider({ videos, children }) {
     setCurrent((state) => (state.n === null ? state : { ...state, closing: true }));
   }, []);
 
+  // Previous / next stay within the same kind: videos with videos, documents with documents.
+  const opened = videos.find((video) => video.n === current.n);
+  const sequence = useMemo(
+    () =>
+      opened
+        ? videos.filter((video) => (video.media.provider === 'pdf') === (opened.media.provider === 'pdf'))
+        : [],
+    [videos, opened],
+  );
+  const position = opened ? sequence.indexOf(opened) : -1;
+
   const go = useCallback(
     (index) => {
-      if (videos[index]) setCurrent({ n: videos[index].n, closing: false });
+      if (sequence[index]) setCurrent({ n: sequence[index].n, closing: false });
     },
-    [videos]
+    [sequence],
   );
 
   // Let the closing animation play, then unmount (which also stops the video) and give focus back.
@@ -222,7 +305,6 @@ export function VideoPlayerProvider({ videos, children }) {
     return () => clearTimeout(timer);
   }, [current.closing]);
 
-  const position = videos.findIndex((video) => video.n === current.n);
   const api = useMemo(() => ({ open }), [open]);
 
   return (
@@ -231,14 +313,14 @@ export function VideoPlayerProvider({ videos, children }) {
       {position >= 0
         ? createPortal(
             <Lightbox
-              video={videos[position]}
+              video={opened}
               position={position}
-              total={videos.length}
+              total={sequence.length}
               closing={current.closing}
               onClose={close}
               onGo={go}
             />,
-            document.body
+            document.body,
           )
         : null}
     </VideoPlayerContext.Provider>

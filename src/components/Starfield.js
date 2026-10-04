@@ -12,19 +12,28 @@ function random(seed) {
   return value - Math.floor(value);
 }
 
-// Each star breathes (opacity + size) and wanders a few pixels, both on very slow, out-of-phase loops.
+// Each star breathes (opacity + size), wanders along its own looping path, and now and then glints, all on slow,
+// out-of-phase loops so the sky never pulses in unison.
 function motionOf(seed) {
-  const twinkle = 6 + random(seed) * 6;
-  const drift = 40 + random(seed + 1) * 40;
+  const twinkle = 5 + random(seed) * 5;
+  const drift = 18 + random(seed + 1) * 16;
+  const shine = 8 + random(seed + 8) * 10;
+  const reach = 8 + random(seed + 9) * 9;
+  const around = (offset) => `${((random(seed + offset) - 0.5) * 2 * reach).toFixed(1)}px`;
   return {
     '--twinkle': `${twinkle.toFixed(2)}s`,
     '--twinkle-delay': `${(-random(seed + 2) * twinkle * 2).toFixed(2)}s`,
     '--drift': `${drift.toFixed(1)}s`,
-    '--drift-delay': `${(-random(seed + 3) * drift * 2).toFixed(1)}s`,
-    '--dx': `${((random(seed + 4) - 0.5) * 8).toFixed(1)}px`,
-    '--dy': `${((random(seed + 5) - 0.5) * 8).toFixed(1)}px`,
-    '--low': (0.14 + random(seed + 6) * 0.1).toFixed(2),
-    '--high': (0.38 + random(seed + 7) * 0.12).toFixed(2),
+    '--drift-delay': `${(-random(seed + 3) * drift).toFixed(1)}s`,
+    '--x1': around(4),
+    '--y1': around(5),
+    '--x2': around(10),
+    '--y2': around(11),
+    '--turn': `${((random(seed + 12) - 0.5) * 24).toFixed(1)}deg`,
+    '--shine': `${shine.toFixed(1)}s`,
+    '--shine-delay': `${(-random(seed + 13) * shine).toFixed(1)}s`,
+    '--low': (0.12 + random(seed + 6) * 0.08).toFixed(2),
+    '--high': (0.4 + random(seed + 7) * 0.18).toFixed(2),
   };
 }
 
@@ -87,7 +96,9 @@ export default function Starfield() {
   return (
     <div className="starfield" aria-hidden="true">
       {field.map(({ key, style }) => (
-        <i key={key} className="star" style={style} />
+        <span key={key} className="star" style={style}>
+          <i className="star__core" />
+        </span>
       ))}
     </div>
   );

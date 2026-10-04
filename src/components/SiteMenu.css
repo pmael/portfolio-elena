@@ -1,0 +1,225 @@
+/*
+ * "Liquid glass": translucent panes that blur and brighten what is behind them, lit from the top left by a
+ * highlight that follows the pointer, with a bright rim and a soft inner glow.
+ */
+.glass {
+  --mx: 30%;
+  --my: 0%;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.26) 0%, rgba(255, 255, 255, 0.05) 42%, rgba(255, 255, 255, 0.14) 100%),
+    rgba(52, 52, 52, 0.34);
+  -webkit-backdrop-filter: blur(18px) saturate(180%) brightness(1.1);
+  backdrop-filter: blur(18px) saturate(180%) brightness(1.1);
+  box-shadow:
+    inset 0 1.5px 1px rgba(255, 255, 255, 0.6),
+    inset 0 -1.5px 2px rgba(255, 255, 255, 0.14),
+    inset 0 0 1.6rem rgba(165, 215, 255, 0.14),
+    0 0.9rem 2.4rem rgba(0, 0, 0, 0.3);
+  isolation: isolate;
+}
+
+/* The light that follows the pointer. */
+.glass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: radial-gradient(circle 9rem at var(--mx) var(--my), rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0) 70%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.glass:hover::before {
+  opacity: 1;
+}
+
+/* ------------------------------------------------------------------------------------------------ */
+
+.menu {
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0px) + clamp(0.7rem, 1.8vw, 1.6rem));
+  right: calc(env(safe-area-inset-right, 0px) + clamp(0.7rem, 1.8vw, 1.6rem));
+  z-index: 60;
+  --button: 3.3rem;
+}
+
+.menu__button {
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: var(--button);
+  height: var(--button);
+  padding: 0;
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+  /* Like a drop of liquid, never quite round. */
+  animation: menu-droplet 9s ease-in-out infinite;
+  transition: transform 0.5s var(--ease-spring);
+}
+
+.menu__button:hover {
+  transform: scale(1.1);
+}
+
+.menu__button:active {
+  transform: scale(0.94);
+}
+
+@keyframes menu-droplet {
+  0%,
+  100% {
+    border-radius: 50%;
+  }
+  25% {
+    border-radius: 47% 53% 51% 49% / 52% 47% 53% 48%;
+  }
+  50% {
+    border-radius: 52% 48% 47% 53% / 49% 53% 47% 51%;
+  }
+  75% {
+    border-radius: 49% 51% 53% 47% / 53% 49% 51% 47%;
+  }
+}
+
+/* The three bars become a cross. */
+.menu__bars {
+  display: grid;
+  gap: 0.3rem;
+  width: 1.4rem;
+}
+
+.menu__bars i {
+  display: block;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  transition:
+    transform 0.5s var(--ease-spring),
+    opacity 0.25s ease;
+}
+
+.menu.is-open .menu__bars i:nth-child(1) {
+  transform: translateY(0.4rem) rotate(45deg);
+}
+
+.menu.is-open .menu__bars i:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.menu.is-open .menu__bars i:nth-child(3) {
+  transform: translateY(-0.4rem) rotate(-45deg);
+}
+
+/* The panel grows out of the button (its origin is the button's centre) and settles with a little bounce. */
+.menu__panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  width: min(26rem, calc(100vw - 1.5rem));
+  max-height: calc(100svh - 1.5rem);
+  overflow-y: auto;
+  padding: calc(var(--button) + 0.6rem) 0.7rem 0.8rem;
+  border-radius: 2.2rem;
+  transform-origin: calc(100% - var(--button) / 2) calc(var(--button) / 2);
+  transform: scale(0.14);
+  opacity: 0;
+  visibility: hidden;
+  scrollbar-width: none;
+  transition:
+    transform 0.45s ease-in,
+    opacity 0.3s ease,
+    visibility 0s linear 0.45s;
+}
+
+.menu__panel::-webkit-scrollbar {
+  display: none;
+}
+
+.menu.is-open .menu__panel {
+  transform: none;
+  opacity: 1;
+  visibility: visible;
+  transition:
+    transform 0.75s cubic-bezier(0.34, 1.32, 0.5, 1),
+    opacity 0.3s ease,
+    visibility 0s;
+}
+
+.menu__panel ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.menu__item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.8rem;
+  padding: 0.5rem 0.9rem 0.52rem;
+  border-radius: 1.3rem;
+  /* Body font in bold, in the highlight colour (like the highlighted words of the text). */
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 2rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  text-decoration: none;
+  opacity: 0;
+  transform: translateY(0.7rem);
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease,
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.menu.is-open .menu__item {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.5s ease calc(180ms + var(--i) * 40ms),
+    transform 0.6s var(--ease-out) calc(180ms + var(--i) * 40ms),
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.menu__item:hover,
+.menu__item:focus-visible {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+/* The current page is told apart by its glass pill. */
+.menu__item.is-active {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.08));
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.55),
+    inset 0 -1px 1px rgba(255, 255, 255, 0.12);
+}
+
+.menu__number {
+  min-width: 1.9rem;
+  font-size: 1.25rem;
+  font-weight: 400;
+  opacity: 0.6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu__button {
+    animation: none;
+  }
+
+  .menu__panel,
+  .menu.is-open .menu__panel,
+  .menu__item,
+  .menu.is-open .menu__item,
+  .menu__bars i {
+    transition: none;
+  }
+}

@@ -1,0 +1,74 @@
+/* Pages are stacked full-screen; only the current one (and, briefly, the one leaving) is in the document. */
+.pages {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  outline: none;
+}
+
+.page {
+  position: absolute;
+  inset: 0;
+}
+
+.page__scroller {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  scrollbar-width: none;
+}
+
+/* Only when even the smallest scale cannot fit the content (a phone held sideways): scroll inside the page. */
+.page__scroller--scrolls {
+  overflow-y: auto;
+}
+
+.page__scroller::-webkit-scrollbar {
+  display: none;
+}
+
+/* At least one screen tall; taller content is scaled down from the top centre (see PageHost.js). */
+.page__inner {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  transform-origin: 50% 0;
+}
+
+/* A liquid change of page: the old one melts away to one side while the new one comes into focus. */
+.page--current {
+  animation: page-in 0.85s var(--ease-out) backwards;
+}
+
+.page--first {
+  animation: none;
+}
+
+.page--leaving {
+  z-index: 0;
+  pointer-events: none;
+  animation: page-out 0.55s ease-in both;
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+    filter: blur(16px);
+    transform: translateX(calc(var(--direction, 1) * 3.5rem)) scale(0.985);
+  }
+}
+
+@keyframes page-out {
+  to {
+    opacity: 0;
+    filter: blur(16px);
+    transform: translateX(calc(var(--direction, 1) * -3.5rem)) scale(1.015);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page--current,
+  .page--leaving {
+    animation: none;
+  }
+}

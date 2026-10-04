@@ -26,3 +26,14 @@ class VisibleIntersectionObserver {
 
 global.IntersectionObserver = VisibleIntersectionObserver;
 window.IntersectionObserver = VisibleIntersectionObserver;
+
+// Tests run like a visitor who asked for reduced motion: pages swap and players close at once, no timers needed.
+window.matchMedia = (query) => ({
+  matches: query.includes('prefers-reduced-motion: reduce'),
+  media: query,
+  addEventListener() {},
+  removeEventListener() {},
+  addListener() {},
+  removeListener() {},
+  dispatchEvent: () => false,
+});

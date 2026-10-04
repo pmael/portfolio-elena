@@ -1,0 +1,42 @@
+.pdf-reader {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  overflow: hidden;
+  background: #2b2b2b;
+}
+
+/* The page is fitted to the stage and centred. */
+.pdf-reader__page {
+  flex: none;
+  margin: auto;
+  background: #fff;
+  opacity: 0;
+  transform: translateY(0.6rem);
+  transition:
+    opacity 0.4s ease,
+    transform 0.5s var(--ease-out);
+}
+
+.pdf-reader__page.is-ready {
+  opacity: 1;
+  transform: none;
+}
+
+.pdf-reader__message {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 1.5rem;
+  text-align: center;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pdf-reader__page {
+    transform: none;
+    transition: none;
+  }
+}

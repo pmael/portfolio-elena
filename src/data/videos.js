@@ -1,6 +1,16 @@
 import { parseMediaUrl } from '../lib/media';
 import reunionPoster from '../assets/posters/instagram-DSzbShhCG3X.jpg';
 import newYorkPoster from '../assets/posters/instagram-DERoZsLR6jz.jpg';
+import video8 from '../assets/videos/video-8.mp4';
+import video8Poster from '../assets/posters/video-8.jpg';
+import video10 from '../assets/videos/video-10.mp4';
+import video10Poster from '../assets/posters/video-10.jpg';
+import document11 from '../assets/documents/document-11.pdf';
+import document11Poster from '../assets/posters/document-11.jpg';
+import document12 from '../assets/documents/document-12.pdf';
+import document12Poster from '../assets/posters/document-12.jpg';
+import document13 from '../assets/documents/document-13.pdf';
+import document13Poster from '../assets/posters/document-13.jpg';
 
 /*
  * Every video slot of the portfolio, numbered like the reference slides (1 to 13).
@@ -8,7 +18,9 @@ import newYorkPoster from '../assets/posters/instagram-DERoZsLR6jz.jpg';
  *  - A slot with a `url` becomes a playable card. YouTube and Instagram reel links are understood
  *    (YouTube thumbnails are fetched automatically; for Instagram, which has no public thumbnails,
  *    give a `poster` image).
- *  - A slot without a `url` stays a blank placeholder, ready to be filled in later.
+ *  - A slot with a `file` is a video file (.mp4) or a PDF document that ships with the site: import it, and
+ *    give a `poster` image (a video frame, or the first page of the PDF). PDFs open in a page reader.
+ *  - A slot with neither stays a blank placeholder, ready to be filled in later.
  */
 const SLIDES = [
   {
@@ -71,7 +83,8 @@ const SLIDES = [
       },
       {
         n: 8,
-        url: null,
+        file: video8,
+        poster: video8Poster,
         caption: 'Montaje skate, Venice Beach, Los Ángeles.\nCámara y editora. Enero 2025',
       },
       {
@@ -82,7 +95,8 @@ const SLIDES = [
       },
       {
         n: 10,
-        url: null,
+        file: video10,
+        poster: video10Poster,
         caption: 'Mock app campaign. Editora. Abril 2024',
       },
     ],
@@ -92,24 +106,53 @@ const SLIDES = [
     label: 'Guiones',
     title: ['Guiones'],
     aside: '(En inglés)',
-    orientation: 'portrait',
+    orientation: 'document',
     items: [
-      { n: 11, url: null, caption: 'Minirrelato. The Lady in Distress. Septiembre 2025' },
-      { n: 12, url: null, caption: 'Minirrelato. Grief. Septiembre 2025' },
-      { n: 13, url: null, caption: 'Largometraje. Stormed (escenas 1-8). Diciembre 2024' },
+      {
+        n: 11,
+        file: document11,
+        poster: document11Poster,
+        caption: 'Minirrelato. The Lady in Distress. Septiembre 2025',
+      },
+      { n: 12, file: document12, poster: document12Poster, caption: 'Minirrelato. Grief. Septiembre 2025' },
+      {
+        n: 13,
+        file: document13,
+        poster: document13Poster,
+        caption: 'Largometraje. Stormed (escenas 1-8). Diciembre 2024',
+      },
     ],
   },
 ];
 
+// What a slot plays: a YouTube / Instagram link, a video file, or a PDF.
+export function mediaOf(item) {
+  if (item.file) {
+    return /\.pdf(\?|$)/i.test(item.file)
+      ? { provider: 'pdf', src: item.file }
+      : { provider: 'file', src: item.file };
+  }
+  return parseMediaUrl(item.url);
+}
+
 export const VIDEO_SLIDES = SLIDES.map((slide) => ({
   ...slide,
   items: slide.items.map((item) => {
-    const media = parseMediaUrl(item.url);
-    return { ...item, media, playable: Boolean(media) };
+    const media = mediaOf(item);
+    return {
+      ...item,
+      media,
+      playable: Boolean(media),
+      // Where "see the original" points: the link itself, or the PDF to download (a video file has none).
+      href: item.url || (media && media.provider === 'pdf' ? media.src : null),
+    };
   }),
 }));
 
-// Only the slots that can actually be played, in order (used by the previous / next buttons of the player).
+export const isDocument = (item) => Boolean(item.media) && item.media.provider === 'pdf';
+
+// Every slot that can be opened, in order. The player's previous / next buttons walk through the videos or
+// through the documents, never mixing the two.
 export const PLAYABLE_VIDEOS = VIDEO_SLIDES.flatMap((slide) => slide.items).filter(
   (item) => item.playable
 );

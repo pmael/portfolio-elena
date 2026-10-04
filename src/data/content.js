@@ -55,7 +55,6 @@ export const PODCAST = {
 
 export const CONTACT_COPY = {
   title: ['¡Contáctame!'],
-  qrCaption: 'Escanea o haz click!',
   instagramLabel: 'Instagram de Elena (@eleemj)',
   linkedinLabel: 'LinkedIn de Elena (eleemj)',
   emailLabel: 'Escribir un correo a Elena',
