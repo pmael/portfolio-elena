@@ -45,7 +45,7 @@ describe('the pages', () => {
   test('the hamburger lists the ten pages of the deck, in order, and marks the current one', () => {
     render(<App />);
     const links = menu().getAllByRole('link');
-    expect(links.map((link) => link.textContent.replace(/^\d+/, ''))).toEqual(PAGES);
+    expect(links.map((link) => link.textContent)).toEqual(PAGES);
     expect(links[0]).toHaveAttribute('aria-current', 'page');
     expect(menuButton()).toHaveAttribute('aria-expanded', 'false');
     fireEvent.click(menuButton());
@@ -90,16 +90,59 @@ describe('the pages', () => {
     await waitFor(() => expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument());
   });
 
-  test('the arrow at the bottom of the intro goes to the next page', async () => {
+  test('the intro has no arrow to scroll down: pages are opened from the menu', () => {
     render(<App />);
-    fireEvent.click(screen.getByRole('link', { name: 'Ir a la página siguiente' }));
-    await waitFor(() => expect(screen.getByRole('heading', { name: '¿Quién Soy?' })).toBeInTheDocument());
+    expect(screen.queryByRole('link', { name: /página siguiente/ })).not.toBeInTheDocument();
+    expect(document.querySelector('.scroll-hint')).toBeNull();
+  });
+
+  test('the menu lists the pages by name only, without numbers', () => {
+    render(<App />);
+    menu()
+      .getAllByRole('link')
+      .forEach((link, index) => expect(link.textContent).toBe(PAGES[index]));
   });
 
   test('a link to a page (#podcast) opens that page', () => {
     window.history.replaceState(null, '', '/#podcast');
     render(<App />);
     expect(screen.getByRole('heading', { level: 2, name: 'Podcast' })).toBeInTheDocument();
+  });
+});
+
+describe('texts', () => {
+  test('¿Quién soy? uses the wording that was sent, in one paragraph with the interests below it', async () => {
+    render(<App />);
+    await goTo('Quién soy');
+    expect(screen.getByText(/¡Hola! Mi nombre es Elena Morales Jiménez y si me tuviera que describir\.\.\./)).toBeInTheDocument();
+    expect(screen.getByText('Pero... ¿Por qué?')).toBeInTheDocument();
+    const long = screen.getByText(/^Las personas a mi alrededor/);
+    expect(long).toHaveTextContent('se sorprenden por la amplia biblioteca');
+    expect(long).toHaveTextContent('se cansan de oírme. Además, soy una persona bastante nostálgica');
+    expect(screen.getByText(/^Mis mayores intereses/)).toBeInTheDocument();
+  });
+
+  test('only the podcast introduction and four caption titles are italic', async () => {
+    const { container } = render(<App />);
+    const italics = [];
+    for (const page of ['Podcast', 'Vídeos', 'Redes sociales', 'Guiones']) {
+      await goTo(page);
+      container.querySelectorAll('em').forEach((node) => italics.push(node.textContent));
+    }
+    expect(italics).toEqual(['Making of', 'The Lady in Distress.', 'Grief.', 'Stormed']);
+    await goTo('Podcast');
+    expect(container.querySelector('.podcast__intro')).toBeInTheDocument();
+  });
+});
+
+describe('podcast page', () => {
+  test('"página web" opens the podcast website in a new tab', async () => {
+    render(<App />);
+    await goTo('Podcast');
+    const link = screen.getByRole('link', { name: 'página web' });
+    expect(link).toHaveAttribute('href', 'https://oye-tia.uc3m.workers.dev');
+    expect(link).toHaveAttribute('target', '_blank');
+    expect(link).toHaveAttribute('rel', expect.stringContaining('noopener'));
   });
 });
 

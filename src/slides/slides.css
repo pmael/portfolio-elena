@@ -29,8 +29,6 @@
    =============================================================================================== */
 .slide--hero {
   justify-content: center;
-  /* Room for the scroll cue at the bottom, so it can never touch the name on a short screen. */
-  padding-bottom: clamp(5rem, 14vh, 7.5rem);
 }
 
 .title--hero {
@@ -58,9 +56,18 @@
 /* ===================================================================================================
    2 · ¿Quién soy? and 3 · Mi trayectoria — text slides
    =============================================================================================== */
-/* The font is so narrow that even a wide block stays comfortable to read (about 31 em per line). */
+/* The long texts: Calibri, plain (the hairline outline and letter-spacing of the handwriting font would blur it). */
+.prose,
+.podcast__text {
+  font-family: var(--font-text);
+  font-size: var(--fs-text);
+  line-height: 1.32;
+  letter-spacing: 0;
+  -webkit-text-stroke: 0;
+}
+
 .prose {
-  width: min(100%, 90rem);
+  width: min(100%, 76rem);
 }
 
 .prose__block + .prose__block {
@@ -143,8 +150,6 @@
   align-items: center;
   column-gap: clamp(1.5rem, 4.5vw, 5.5rem);
   width: min(100%, 118rem);
-  font-style: italic;
-  line-height: 1.24;
 }
 
 .podcast__cover {
@@ -178,6 +183,7 @@
 }
 
 .podcast__intro {
+  font-style: italic;
   margin-bottom: 1.2em;
   text-align: center;
 }
@@ -288,7 +294,6 @@
   width: calc(100% + 3rem);
   margin-top: 0.8rem;
   font-size: var(--fs-caption);
-  font-style: italic;
   line-height: 1.22;
   white-space: pre-line;
   text-wrap: balance;

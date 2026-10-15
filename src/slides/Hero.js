@@ -1,20 +1,16 @@
 import Slide from '../components/Slide';
 import AnimatedTitle from '../components/AnimatedTitle';
 import Reveal from '../components/Reveal';
-import ScrollHint from '../components/ScrollHint';
 import useFontsReady from '../hooks/useFontsReady';
-import { useNavigation } from '../components/Navigation';
 import { HERO } from '../data/content';
 
-// The intro, in the spirit of a phone's welcome screen: the title appears letter by letter, then the name,
-// then a "keep going" cue. Times are in ms from the moment the fonts are ready.
+// The intro, in the spirit of a phone's welcome screen: the title appears letter by letter, then the name.
+// Times are in ms from the moment the fonts are ready.
 const TITLE_START = 400;
 const NAME_DELAY = 2500;
-const HINT_DELAY = 4200;
 
 export default function Hero() {
   const fontsReady = useFontsReady();
-  const { go } = useNavigation();
 
   return (
     <Slide id="inicio" className="slide--hero">
@@ -29,16 +25,6 @@ export default function Hero() {
       <Reveal as="p" className="hero__name" delay={NAME_DELAY} enabled={fontsReady}>
         {HERO.name}
       </Reveal>
-      <ScrollHint
-        href="#quien-soy"
-        label="Ir a la página siguiente"
-        onClick={(event) => {
-          event.preventDefault();
-          go('quien-soy');
-        }}
-        enabled={fontsReady}
-        delay={HINT_DELAY}
-      />
     </Slide>
   );
 }

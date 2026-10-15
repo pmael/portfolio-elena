@@ -21,7 +21,7 @@ Everything that can change lives in `src/data/`; no component needs to be touche
 
 | File | What it holds |
 | --- | --- |
-| `content.js` | All the texts. `**double asterisks**` make a word bold and highlighted (`#FFF3BD`). |
+| `content.js` | All the texts. `**double asterisks**` make a word bold and highlighted (`#FFF3BD`), `*single asterisks*` make it italic (also used in the captions of `videos.js`). |
 | `software.js` | The 8 tools, their logo and their rating (0 to 5). |
 | `videos.js` | The 13 video slots, their captions and links. |
 | `links.js` | Email, Instagram, LinkedIn, the podcast website. |
@@ -37,18 +37,19 @@ Videos 8 and 10 were phone `.mov` files (10 MB and 40 MB); they were converted t
 (1.7 MB and 4.5 MB). To add another one the same way: `ffmpeg -i in.mov -vf "scale='min(720,iw)':-2" -c:v libx264
 -crf 24 -pix_fmt yuv420p -movflags +faststart -c:a aac -b:a 96k out.mp4`.
 
-**Podcast website**: the underlined "página web" of the Podcast slide becomes a link as soon as you paste its
-address in `PODCAST_WEBSITE` (`links.js`).
+**Podcast website**: the underlined "página web" of the Podcast page opens `PODCAST_WEBSITE` (`links.js`) in a new tab.
 
 ## How it behaves
 
+Italics are used only for the podcast introduction and the titles "Making of", "The Lady in Distress.", "Grief." and "Stormed" in the captions.
+
 - **Pages, no scrolling**: each slide of the deck is a page, shown on its own. The **hamburger** on the top right
   opens a liquid-glass menu listing every page (it grows out of the button; the light follows the pointer).
-  ← / → (or Page Up / Down), the browser's back button and the arrow of the intro also turn pages, and the
+  ← / → (or Page Up / Down), and the browser's back button also turn pages, and the
   address follows (`#podcast`). A page taller than the screen is scaled down to fit (down to 66%; only below
   that does it scroll inside the page). Each page plays its entrance animations every time it opens.
-- **Intro**: the title appears letter by letter (blur to sharp) once the fonts are loaded, then the name, then a
-  "keep going" chevron (it opens the next page), like a phone's welcome screen.
+- **Intro**: the title appears letter by letter (blur to sharp) once the fonts are loaded, then the name, like a
+  phone's welcome screen.
 - **Titles** float in a very light wave while on screen. Page content fades up; the highlighted words light up one
   after another.
 - **Stars**: rebuilt from `stars-background.svg` (same 52 sparkles as the slides). Each one breathes, wanders along
@@ -73,6 +74,10 @@ address in `PODCAST_WEBSITE` (`links.js`).
 - **Text**: *A day without sun* by Zetafonts (`a-day-without-sun.otf`, used unmodified). It is released under
   **CC BY-NC**: its licence asks for a credit line (currently not shown on the page) and commercial use needs a licence from
   Zetafonts (<http://www.zetafonts.com/collection/188>). A portfolio used to find work may count as commercial use.
+
+The long texts (¿Quién soy?, Mi trayectoria, Podcast) are set in **Calibri**. It is a Microsoft font that cannot be
+shipped with a website, so visitors who have it get the real one and everybody else gets **Carlito**, its free
+metric-compatible twin (`carlito-*.woff2`, SIL Open Font Licence, licence file included).
 
 ## Project layout
 

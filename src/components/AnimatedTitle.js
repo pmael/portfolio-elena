@@ -8,7 +8,7 @@ import './AnimatedTitle.css';
  * very light wave while on screen.
  *
  *   lines     – one string per line: ['PORTFOLIO', 'AUDIOVISUAL']
- *   aside     – small italic note next to the title, e.g. "(En inglés)"
+ *   aside     – small note next to the title, e.g. "(En inglés)"
  *   ready     – hold the animation back until this is true (the hero waits for the fonts)
  *   startDelay – ms before the first letter appears
  */

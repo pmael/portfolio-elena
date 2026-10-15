@@ -2,6 +2,7 @@ import Slide from '../components/Slide';
 import AnimatedTitle from '../components/AnimatedTitle';
 import Reveal from '../components/Reveal';
 import VideoCard from '../components/VideoCard';
+import RichText from '../components/RichText';
 
 // Used for the four video slides (Vídeos, Videoclips musicales, Redes sociales, Guiones): only the content of
 // `slide` (see data/videos.js) changes. The card shape comes from `orientation`; how many sit on a row from the
@@ -17,7 +18,9 @@ export default function VideoSlide({ slide }) {
           {items.map((item, index) => (
             <Reveal as="figure" className="video-item" delay={index * 130} key={item.n}>
               <VideoCard item={item} />
-              <figcaption>{item.caption}</figcaption>
+              <figcaption>
+                <RichText text={item.caption} />
+              </figcaption>
             </Reveal>
           ))}
         </div>

@@ -4,6 +4,5 @@ export const CONTACT = {
   linkedin: 'https://www.linkedin.com/in/eleemj',
 };
 
-// "página web" is underlined in the Podcast slide, so it is meant to be a link. No address was provided yet:
-// paste the podcast website URL here and it becomes clickable (until then it stays plain underlined text).
-export const PODCAST_WEBSITE = '';
+// The podcast's website: the underlined "página web" of the Podcast page opens it (in a new tab).
+export const PODCAST_WEBSITE = 'https://oye-tia.uc3m.workers.dev';

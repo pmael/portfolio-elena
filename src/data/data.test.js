@@ -1,4 +1,4 @@
-import { CONTACT } from './links';
+import { CONTACT, PODCAST_WEBSITE } from './links';
 import { MAX_RATING, SOFTWARE } from './software';
 import { PLAYABLE_VIDEOS, VIDEO_SLIDES, isDocument, mediaOf } from './videos';
 import { STARS } from './stars';
@@ -92,6 +92,12 @@ describe('contact links', () => {
 
   test('the email address matches the reference', () => {
     expect(CONTACT.email).toBe('eleemjmnz@gmail.com');
+  });
+});
+
+describe('podcast website', () => {
+  test('is the address of the ¡Oye, tía! site', () => {
+    expect(PODCAST_WEBSITE).toBe('https://oye-tia.uc3m.workers.dev');
   });
 });
 

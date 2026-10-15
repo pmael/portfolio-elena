@@ -13,7 +13,8 @@ import document13 from '../assets/documents/document-13.pdf';
 import document13Poster from '../assets/posters/document-13.jpg';
 
 /*
- * Every video slot of the portfolio, numbered like the reference slides (1 to 13).
+ * Every video slot of the portfolio, numbered like the reference slides (1 to 13). In a caption, *single
+ * asterisks* make the words between them italic (nothing else is).
  *
  *  - A slot with a `url` becomes a playable card. YouTube and Instagram reel links are understood
  *    (YouTube thumbnails are fetched automatically; for Instagram, which has no public thumbnails,
@@ -32,7 +33,7 @@ const SLIDES = [
       {
         n: 1,
         url: 'https://youtu.be/EXBpnLsG9fc?is=DFdHPStw8igq1tFr',
-        caption: 'Making of de videoclip. Cámara. Mayo 2026',
+        caption: '*Making of* de videoclip. Cámara. Mayo 2026',
       },
       {
         n: 2,
@@ -112,14 +113,14 @@ const SLIDES = [
         n: 11,
         file: document11,
         poster: document11Poster,
-        caption: 'Minirrelato. The Lady in Distress. Septiembre 2025',
+        caption: 'Minirrelato. *The Lady in Distress.* Septiembre 2025',
       },
-      { n: 12, file: document12, poster: document12Poster, caption: 'Minirrelato. Grief. Septiembre 2025' },
+      { n: 12, file: document12, poster: document12Poster, caption: 'Minirrelato. *Grief.* Septiembre 2025' },
       {
         n: 13,
         file: document13,
         poster: document13Poster,
-        caption: 'Largometraje. Stormed (escenas 1-8). Diciembre 2024',
+        caption: 'Largometraje. *Stormed* (escenas 1-8). Diciembre 2024',
       },
     ],
   },

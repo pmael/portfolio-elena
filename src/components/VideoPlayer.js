@@ -4,6 +4,8 @@ import { embedUrl } from '../lib/media';
 import PdfReader from './PdfReader';
 import prefersReducedMotion from '../lib/motion';
 import cx from '../lib/cx';
+import { plain } from '../lib/text';
+import RichText from './RichText';
 import './VideoPlayer.css';
 
 const CLOSE_ANIMATION_MS = 220;
@@ -108,7 +110,7 @@ function Lightbox({ video, position, total, closing, onClose, onGo }) {
     return () => window.removeEventListener('message', onMessage);
   }, [isInstagram, video.n]);
 
-  const label = caption.replace(/\s*\n\s*/g, ' ');
+  const label = plain(caption);
   const provider = isInstagram ? 'Instagram' : 'YouTube';
 
   return (
@@ -172,7 +174,9 @@ function Lightbox({ video, position, total, closing, onClose, onGo }) {
           </button>
         </div>
 
-        <p className="lightbox__caption">{caption}</p>
+        <p className="lightbox__caption">
+          <RichText text={caption} />
+        </p>
 
         {isDocument ? (
           <div className="lightbox__controls lightbox__controls--pages">

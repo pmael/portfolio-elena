@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { youtubeThumbnail } from '../lib/media';
 import cx from '../lib/cx';
+import { plain } from '../lib/text';
 import { useVideoPlayer } from './VideoPlayer';
 import instagramLogo from '../assets/images/instagram-logo.png';
 import './VideoCard.css';
@@ -67,7 +68,7 @@ export default function VideoCard({ item }) {
       type="button"
       className="video-card"
       onClick={() => open(item.n)}
-      aria-label={`${isDocument ? 'Leer' : 'Reproducir'}: ${item.caption.replace(/\s*\n\s*/g, ' ')}`}
+      aria-label={`${isDocument ? 'Leer' : 'Reproducir'}: ${plain(item.caption)}`}
     >
       <Poster item={item} />
       <span className="video-card__shade" aria-hidden="true" />

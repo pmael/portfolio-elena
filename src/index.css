@@ -20,6 +20,43 @@
   font-display: swap;
 }
 
+/*
+ * The long texts (¿Quién soy?, Mi trayectoria, Podcast) are set in Calibri. It is a Microsoft font that cannot be
+ * shipped with a website, so visitors who have it (Windows / Office) get the real one, and everybody else gets
+ * Carlito, its free metric-compatible twin (SIL Open Font Licence, see assets/fonts/carlito-LICENSE.txt).
+ */
+@font-face {
+  font-family: 'Carlito';
+  src: url('./assets/fonts/carlito-400-normal.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Carlito';
+  src: url('./assets/fonts/carlito-400-italic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Carlito';
+  src: url('./assets/fonts/carlito-700-normal.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Carlito';
+  src: url('./assets/fonts/carlito-700-italic.woff2') format('woff2');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
 /* ---------------------------------------------------------------------------------------------------
    Design tokens (colours from the brief: titles #A5D7FF, text white, highlights #FFF3BD)
    ------------------------------------------------------------------------------------------------ */
@@ -32,12 +69,14 @@
   --accent: #fff3bd;
 
   --font-title: 'TAN Moonlight', 'Arial Rounded MT Bold', 'Trebuchet MS', sans-serif;
+  --font-text: Calibri, 'Carlito', 'Segoe UI', Arial, sans-serif;
   --font-body: 'A Day Without Sun', 'Bradley Hand', 'Segoe Print', 'Comic Sans MS', cursive;
 
   /* Fluid sizes: the 1920px slides of the reference at full width, readable down to phones. */
   --fs-hero: clamp(2.9rem, min(12.2vw, 22vh), 11.25rem);
   --fs-title: clamp(2.6rem, min(8.2vw, 17vh), 6.6rem);
   --fs-body: clamp(1.6rem, 0.95rem + 1.7vw, 2.85rem);
+  --fs-text: clamp(1.2rem, 0.6rem + 1.2vw, 2.15rem);
   --fs-caption: clamp(1.35rem, 0.95rem + 0.85vw, 2rem);
   --gutter: clamp(1.25rem, 4.5vw, 5rem);
 

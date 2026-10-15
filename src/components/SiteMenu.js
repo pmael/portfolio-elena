@@ -94,9 +94,6 @@ export default function SiteMenu({ pages }) {
                 aria-current={id === current ? 'page' : undefined}
                 onClick={(event) => choose(event, id)}
               >
-                <span className="menu__number" aria-hidden="true">
-                  {String(index + 1).padStart(2, '0')}
-                </span>
                 {label}
               </a>
             </li>

@@ -1,4 +1,5 @@
-// All the copy of the portfolio. `**double asterisks**` mark the highlighted words (shown in #FFF3BD).
+// All the copy of the portfolio. `**double asterisks**` mark the highlighted words (shown in #FFF3BD) and
+// `*single asterisks*` italic ones.
 // An array of strings inside a block means a line break between them.
 
 export const HERO = {
@@ -9,12 +10,11 @@ export const HERO = {
 export const ABOUT = {
   title: ['¿Quién Soy?'],
   blocks: [
-    ['¡Hola! Mi nombre es Elena Morales Jiménez y si me tuviera que describir…', 'Diría que soy…'],
+    ['¡Hola! Mi nombre es Elena Morales Jiménez y si me tuviera que describir...', 'Diría que soy...'],
     ['¡Una radio andante!'],
-    ['Pero … ¿Por qué?'],
+    ['Pero... ¿Por qué?'],
     [
-      'Las personas a mi alrededor dicen que soy un libro cerrado esperando a ser abierto, una caja de Pandora: si me abres, ya no me puedes cerrar. Que parezco misteriosa, pero luego no me callo, vaya. Y ya no es solo hablar, sino también cantar. Y es que no soy cantante, pero siempre hay alguna melodía sonando en mi cabeza, y mis amigos se sorprenden con la amplia biblioteca de canciones que existe en mi cerebro. Y, aunque nunca nadie me lo ha dicho, yo supongo que llega un momento en el que se cansan de oírme.',
-      'Además, soy una persona bastante nostálgica, vivo pensando en mi pasado y en un mundo anterior a mí. Hasta guardo las invitaciones de cumpleaños de personas que nunca he vuelto a ver. Es por eso que, como persona que ha vivido siempre pegada a una pantalla (de la TV, al ordenador familiar, a la Nintendo, a una tablet y hasta llegar al teléfono), decidí comenzar a documentarlo todo y a plasmar mi subconsciente en una, con banda sonora incluida.',
+      'Las personas a mi alrededor dicen que soy un libro cerrado esperando a ser abierto, una caja de Pandora: si me abres, ya no me puedes cerrar. Que parezco misteriosa, pero luego no me callo, vaya. Y ya no es solo hablar, sino también cantar. Y es que no soy cantante, pero siempre hay alguna melodía sonando en mi cabeza, y mis amigos se sorprenden por la amplia biblioteca de canciones que existe en mi cerebro. Y, aunque nunca nadie me lo ha dicho, yo supongo que llega un momento en el que se cansan de oírme. Además, soy una persona bastante nostálgica, vivo pensando en mi pasado y en un mundo anterior a mí. Hasta guardo las invitaciones de cumpleaños de personas que nunca he vuelto a ver. Es por eso que, como persona que ha vivido siempre pegada a una pantalla (de la TV, al ordenador familiar, a la Nintendo, a una tablet y hasta llegar al teléfono), decidí comenzar a documentarlo todo y a plasmar mi subconsciente en una, con banda sonora incluida.',
       'Mis mayores intereses más allá de lo audiovisual son la música, el baile, la moda, la psicología, la nutrición y el deporte.',
     ],
   ],
