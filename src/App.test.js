@@ -140,7 +140,7 @@ describe('podcast page', () => {
     render(<App />);
     await goTo('Podcast');
     const link = screen.getByRole('link', { name: 'página web' });
-    expect(link).toHaveAttribute('href', 'https://oye-tia.uc3m.workers.dev');
+    expect(link).toHaveAttribute('href', 'https://oye-tia.elena-morales-jimenez.workers.dev');
     expect(link).toHaveAttribute('target', '_blank');
     expect(link).toHaveAttribute('rel', expect.stringContaining('noopener'));
   });

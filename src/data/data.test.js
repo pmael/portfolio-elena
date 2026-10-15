@@ -97,7 +97,7 @@ describe('contact links', () => {
 
 describe('podcast website', () => {
   test('is the address of the ¡Oye, tía! site', () => {
-    expect(PODCAST_WEBSITE).toBe('https://oye-tia.uc3m.workers.dev');
+    expect(PODCAST_WEBSITE).toBe('https://oye-tia.elena-morales-jimenez.workers.dev');
   });
 });
 
