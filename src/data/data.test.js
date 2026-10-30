@@ -70,6 +70,13 @@ describe('video slots', () => {
     expect(slot(n).poster).toBeTruthy();
   });
 
+  test('video 10 is the recruitment editing trial, with a caption that has no italics', () => {
+    expect(slot(10).caption).toBe(
+      'Creative recruitment editing trial with Triniti Alexia Media (TAM) and Baobab Café. October 2026'
+    );
+    expect(slot(10).caption).not.toContain('*');
+  });
+
   test('every slot now has something to open', () => {
     expect(slots.every((item) => item.playable)).toBe(true);
     expect(PLAYABLE_VIDEOS.map((item) => item.n)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);

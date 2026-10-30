@@ -98,7 +98,7 @@ const SLIDES = [
         n: 10,
         file: video10,
         poster: video10Poster,
-        caption: 'Mock app campaign. Editora. Abril 2024',
+        caption: 'Creative recruitment editing trial with Triniti Alexia Media (TAM) and Baobab Café. October 2026',
       },
     ],
   },
